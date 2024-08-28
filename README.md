@@ -6,15 +6,16 @@ sudo apt-get update
 ```
 Then, run the following command to install JDK 11:
 ```bash
-sudo apt-get install openjdk-11-jdk
+sudo apt install fontconfig openjdk-17-jre
+java -version
 ```
 Now, we will install Jenkins itself. Issue the following four commands in sequence to initiate the installation from the Jenkins repository:
 ```bash
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian/jenkins.io-2023.key
 
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 
 sudo apt-get update
@@ -43,6 +44,14 @@ Once done, test whether the firewall is active using this command:
 sudo ufw status
 ```
 With the firewall configured, it’s time to set up Jenkins itself. Type in the IP of your EC2 along with the port number. The Jenkins setup wizard will open.
+
+If Jenkins fails to start because a port is in use, run systemctl edit jenkins and add the following:
+
+[Service]
+Environment="JENKINS_PORT=8081"
+
+Here, "8081" was chosen but you can put another port available.
+
 
 To check the initial password, use the cat command as indicated below:
 ```bash
